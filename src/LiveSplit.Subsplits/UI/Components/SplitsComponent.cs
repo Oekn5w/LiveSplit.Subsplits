@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace LiveSplit.UI.Components;
 
 [GlobalFontConsumer(GlobalFont.TimesFont)]
-public class SplitsComponent : IComponent
+public class SplitsComponent : IComponentAdditional
 {
     public ComponentRendererComponent InternalComponent { get; protected set; }
 
@@ -405,6 +405,14 @@ public class SplitsComponent : IComponent
         MeasureTimeLabel.SetActualWidth(g);
         MeasureDeltaLabel.SetActualWidth(g);
         MeasureCharLabel.SetActualWidth(g);
+    }
+
+    public int GetRenderedSplitIndex(LiveSplitState state)
+    {
+        int runningSectionIndex = Math.Min(Math.Max(state.CurrentSplitIndex, 0), state.Run.Count - 1);
+        ScrollOffset = Math.Min(Math.Max(ScrollOffset, -runningSectionIndex), state.Run.Count - runningSectionIndex - 1);
+        int currentSplit = ScrollOffset + runningSectionIndex;
+        return currentSplit;
     }
 
     public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
